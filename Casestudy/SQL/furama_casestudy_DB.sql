@@ -21,7 +21,7 @@ department_name varchar(50)
 
 create table employee (
 id_employee INT not null primary key, 
-empolyee_name varchar(50), 
+employee_name varchar(50), 
 id_position INT, 
 id_level INT, 
 id_department INT,
@@ -113,3 +113,6 @@ quantity int,
 foreign key (id_include_services) references include_services (id_include_services),
 foreign key (id_contract) references contract (id_contract)
 );
+
+
+
