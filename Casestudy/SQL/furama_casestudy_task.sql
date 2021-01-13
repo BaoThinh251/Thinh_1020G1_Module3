@@ -38,15 +38,57 @@ where exists (select contract.id_contract from contract where year(contract.day_
 and not exists (select contract.id_contract from contract where year(contract.day_start) = '2019' and contract.id_contract = services.id_services);
 
 -- task8
+-- cach1
+select distinct customer.customer_name
+from customer;
+
+insert into customer (id_customer , customer_name)
+values (1, 'james'), (2, 'james'), (3, 'lily'), (4, 'snape'), (5, 'snape'), (6, 'dumbledoge'), (7, 'mcgonagall');
+
+-- cach2
+select customer_name
+from customer
+union
+select customer_name
+from customer;
+
+-- cach3
+select customer_name
+from customer
+group by customer_name;
 
 -- task9
+select temp.month, count(month(contract.day_start)) as customer_quantity, sum(contract.total_cost) as total_pay
+from (select 1 as month
+union select 2 as month 
+union select 3 as month 
+union select 4 as month 
+union select 5 as month 
+union select 6 as month 
+union select 7 as month 
+union select 8 as month 
+union select 9 as month 
+union select 10 as month 
+union select 11 as month 
+union select 12 as month) as temp
+left join contract on month(contract.day_start) = temp.month
+left join customer on customer.id_customer = contract.id_customer
+where year(contract.day_start) = '2019' or year(contract.day_start) is null or month(contract.day_start) is null
+group by temp.month
+order by temp.month;
+
 
 -- task10
-
+select contract.id_contract, contract.day_start, contract.day_end, contract.deposits, count(contract_information.id_include_services) as books_time
+from contract join contract_information on contract.id_contract = contract_information.id_contract
+group by contract.id_contract;
 
 -- task11
 select *
-from include_services 
+from include_services left join contract_information on include_services.id_include_services = contract_information.id_include_services
+join contract on contract_information.id_contract = contract.id_contract
+join customer on contract.id_customer = customer.id_customer
+join type_customer on customer.id_customer = type_customer.id_customer
 where type_customer.type_name = 'Diamond' and customer.address in ('Vinh', 'QuangNgai');
 
 -- task12
@@ -58,7 +100,4 @@ join contract_information on contract.id_contract = contract_information.id_cont
 where exists (select contract.id_contract from contract where (contract.day_start between '2019-10-01' and '2019-12-01') and contract.id_contract = services.id_services)
 and not exists (select contract.id_contract from contract where (contract.day_start between '2019-01-01' and '2019-09-01') and contract.id_contract = services.id_services);
 
--- task13
-select *
-from include_services
-order by include_services.count desc;
+
