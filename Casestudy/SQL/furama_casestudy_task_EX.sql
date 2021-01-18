@@ -6,17 +6,18 @@ where (employee_name like 'H%' or employee_name like 'T%' or employee_name like 
 -- task3
 select *
 from customer
-where address in ('DaNang','QuangTri') and (18 <= TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) <= 50);
+where address in ('DaNang','QuangTri') and (curdate() - date_of_birth > (18*30*365) and curdate() - date_of_birth < (50*30*365));
 
 -- task4
 select customer.customer_name, count(contract.id_contract) as book_time 
 from customer join contract on customer.id_customer = contract.id_customer 
 join type_customer on customer.id_customer_type = type_customer.id_customer_type
-where type_customer.type_name = 'Diamond' group by customer.id_customer order by book_time;
+where type_customer.type_name = 'Diamond' 
+group by customer.id_customer order by book_time;
 
 -- task5
-select customer.id_customer, customer.customer_name, type_customer.type_name, contract.id_contract, services.services_name, contract.day_start, contract.day_end, 
-sum(services.cost + include_services.price * include_services.count) as total_pay
+select customer.id_customer, customer.customer_name, type_customer.type_name, contract.id_contract, services.services_name, contract.day_start, contract.day_end
+, sum(services.cost + include_services.price * contract_information.count) as total_pay
 from customer
 left join type_customer on customer.id_customer_type = type_customer.id_customer_type 
 left join contract on customer.id_customer = contract.id_contract
@@ -27,7 +28,7 @@ group by contract.id_contract;
 
 -- task6
 select services.id_services, services.services_name, services.area, services.cost, services_type.services_name
-from services join services_type on services.id_services_type = services_type.id_services_type
+from services join services_type on services.services_name = services_type.services_name
 where not exists (select contract.id_services from contract where (contract.day_start between '2019-01-01' and '2019-03-01') 
 and contract.id_services = services.id_services);
 
@@ -55,7 +56,7 @@ from customer
 group by customer_name;
 
 -- task9
-select temp.month, count(month(contract.day_start)) as customer_quantity, sum(contract.total_cost) as total_pay
+select temp.month, count(month(contract.day_start)) as customer_quantity, sum(services.cost + include_services.price * contract_information.count) as total_pay
 from (select 1 as month
 union select 2 as month 
 union select 3 as month 
@@ -70,6 +71,9 @@ union select 11 as month
 union select 12 as month) as temp
 left join contract on month(contract.day_start) = temp.month
 left join customer on customer.id_customer = contract.id_customer
+join services on services.id_services = contract.id_services
+join contract_information on contract_information.id_contract = contract.id_contract
+join include_services on include_services.id_include_services = contract_information.id_include_services
 where year(contract.day_start) = '2019' or year(contract.day_start) is null or month(contract.day_start) is null
 group by temp.month
 order by temp.month;
@@ -86,10 +90,10 @@ from include_services join contract_information on include_services.id_include_s
 join contract on contract_information.id_contract = contract.id_contract
 join customer on contract.id_customer = customer.id_customer
 join type_customer on customer.id_customer_type = type_customer.id_customer_type
-where type_customer.type_name = 'Diamond' and customer.address in ('Vinh' or 'QuangNgai');
+where type_customer.type_name = 'Diamond' and customer.address in ('Vinh', 'QuangNgai');
 
 -- task12
-select contract.id_contract, employee.employee_name, customer.customer_name, customer.phone_number, services.services_name, count(contract_information.quantity) as times_use, contract.deposits
+select contract.id_contract, employee.employee_name, customer.customer_name, customer.phone_number, services.services_name, count(contract_information.count) as times_use, contract.deposits
 from contract 
 join employee on employee.id_employee = contract.id_employee
 join customer on customer.id_customer = contract.id_customer
@@ -99,9 +103,10 @@ where exists (select contract.id_contract where contract.day_start between '2019
 and not exists (select contract.id_contract where (contract.day_start between '2019-01-01' and '2019-06-31'));
 
 -- task13
-select *
-from include_services
-where (count) in (select max(count) from include_services); 
+select include_services.include_services_name, include_services.price, contract_information.count, include_services.is_in_use as `status`
+from contract_information join include_services on include_services.id_include_services = contract_information.id_include_services
+group by contract_information.count 
+having contract_information.count in (select max(count) from contract_information);
 
 -- task14
 select contract.id_contract, services_type.services_name, include_services.include_services_name, include_services.count
@@ -125,18 +130,24 @@ having times_book <= 3;
 
 -- task16
 delete from employee 
-where employee.id_employee not in (select contract.id_employee
+where not exists (select contract.id_employee
 from contract 
 where day_start between '2017-01-01' and '2019-12-31'
 group by contract.id_employee
 having count(contract.id_employee)  > 0);
 
--- task17
-update type_customer 
-join customer on type_customer.id_customer_type = customer.id_customer_type
-join contract on customer.id_customer = contract.id_customer
-set type_customer.type_name = 'Diamond'
-where (day_start between '2019-01-01' and '2019-12-31') and (day_end between '2019-01-01' and '2019-12-31') and contract.total_cost > 10000000 and type_customer.type_name = 'Platinium';
+-- task17 
+update type_customer set type_name = 'Diamond' 
+where (select type_name from type_customer
+join customer on customer.id_customer_type = type_customer.id_customer_type
+join contract on contract.id_customer = customer.id_customer
+join services on services.id_services = contract.id_services
+join contract_information on contract_information.id_contract = contract.id_contract
+join include_services on include_services.id_include_services = contract_information.id_include_services
+where (day_start between '2019-01-01' and '2019-12-31') and (day_end between '2019-01-01' and '2019-12-31') 
+and (type_customer.type_name = 'Platinium')
+group by customer.id_customer
+having sum(services.cost + include_services.price * contract_information.count) > 10000000);
 
 -- task18
 delete from contract 
@@ -147,12 +158,13 @@ group by contract_information.id_contract);
 
 -- task19
 update include_services
+join contract_information on contract_information.id_include_services = include_services.id_include_services
 set include_services.price = include_services.price * 2
-where include_services.count >= 10;
+where contract_information.count >= 10;
 
 -- task20 
 select id_employee, employee_name, email, phone_number, date_of_birth, address
 from employee
-union all
+union
 select id_customer, customer_name, email, phone_number, date_of_birth, address
 from customer;
