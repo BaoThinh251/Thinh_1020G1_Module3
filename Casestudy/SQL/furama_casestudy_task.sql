@@ -111,7 +111,7 @@ join contract on contract.id_contract = contract_information.id_contract
 join services on services.id_services = contract.id_services
 join services_type on services_type.id_services_type = services.id_services_type
 where count = 1;
-
+     
 -- task15
 select employee.id_employee, employee.employee_name, employee_level.level_name, employee_department.department_name, employee.phone_number, employee.address, count(contract.id_employee) as times_book
 from contract_information 
@@ -131,4 +131,28 @@ where day_start between '2017-01-01' and '2019-12-31'
 group by contract.id_employee
 having count(contract.id_employee)  > 0);
 
+-- task17
+update type_customer 
+join customer on type_customer.id_customer_type = customer.id_customer_type
+join contract on customer.id_customer = contract.id_customer
+set type_customer.type_name = 'Diamond'
+where (day_start between '2019-01-01' and '2019-12-31') and (day_end between '2019-01-01' and '2019-12-31') and contract.total_cost > 10000000 and type_customer.type_name = 'Platinium';
 
+-- task18
+delete from contract 
+where exists (select contract_information.id_contract 
+from contract_information 
+where day_end < '2017-01-01'
+group by contract_information.id_contract);
+
+-- task19
+update include_services
+set include_services.price = include_services.price * 2
+where include_services.count >= 10;
+
+-- task20 
+select id_employee, employee_name, email, phone_number, date_of_birth, address
+from employee
+union
+select id_customer, customer_name, email, phone_number, date_of_birth, address
+from customer;
