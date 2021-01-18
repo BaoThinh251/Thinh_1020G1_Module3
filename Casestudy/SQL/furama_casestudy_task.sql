@@ -113,10 +113,22 @@ join services_type on services_type.id_services_type = services.id_services_type
 where count = 1;
 
 -- task15
-select employee.id_employee, employee.employee_name, employee_level.level_name, employee_department.department_name, employee.phone_number, employee.address
+select employee.id_employee, employee.employee_name, employee_level.level_name, employee_department.department_name, employee.phone_number, employee.address, count(contract.id_employee) as times_book
 from contract_information 
 join contract on contract.id_contract = contract_information.id_contract
 join employee on employee.id_employee = contract.id_employee
 join employee_department on employee.id_department = employee_department.id_department
 join employee_level on employee.id_level = employee_level.id_level
-where quantity <= 3 and (day_start between '2018-01-01' and '2019-12-31');
+where day_start between '2018-01-01' and '2019-12-31'
+group by employee.id_employee
+having times_book <= 3;
+
+-- task16
+delete from employee 
+where not exists (select contract.id_employee
+from contract 
+where day_start between '2017-01-01' and '2019-12-31'
+group by contract.id_employee
+having count(contract.id_employee)  > 0);
+
+
