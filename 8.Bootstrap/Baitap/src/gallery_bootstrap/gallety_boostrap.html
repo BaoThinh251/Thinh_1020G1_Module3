@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Responsive Image Gallery</title>
+    <style>
+
+        div.gallery {
+            border: 1px solid #ccc;
+        }
+
+        div.gallery:hover {
+            border: 1px solid #777;
+        }
+
+        div.gallery img {
+            width: 100%;
+            height: auto;
+        }
+
+        div.gallery p {
+            text-align: center;
+        }
+
+        div.desc {
+            padding: 15px;
+            text-align: center;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .responsive {
+            padding: 0 6px;
+            float: left;
+            width: 24.99999%;
+        }
+
+        @media only screen and (max-width: 700px){
+            .responsive {
+                width: 49.99999%;
+                margin: 6px 0;
+            }
+        }
+
+        @media only screen and (max-width: 500px){
+            .responsive {
+                width: 100%;
+            }
+        }
+
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+    </style>
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">-->
+</head>
+<body>
+<h2>Responsive Image Gallery</h2>
+<h4>Resize the browser window to see the effect.</h4>
+<div class = "responsive">
+    <div class="gallery">
+        <a target="_blank" href="img/anh1.jpg">
+            <img src="img/anh1.jpg" height="400" width="600" alt="anh1"/>
+        </a>
+        <p>Anh1</p>
+    </div>
+</div>
+<div class = "responsive">
+    <div class="gallery">
+        <a target="_blank" href="img/anh2.jpg">
+            <img src="img/anh2.jpg" height="400" width="600" alt="anh1"/>
+        </a>
+        <p>Anh2</p>
+    </div>
+</div>
+<div class = "responsive">
+    <div class="gallery">
+        <a target="_blank" href="img/anh3.jpg">
+            <img src="img/anh3.jpg" height="400" width="600" alt="anh1"/>
+        </a>
+        <p>Anh3</p>
+    </div>
+</div>
+<div class = "responsive">
+    <div class="gallery">
+        <a target="_blank" href="img/anh4.jpg">
+            <img src="img/anh4.jpg" height="400" width="600" alt="anh1"/>
+        </a>
+        <p>Anh4</p>
+    </div>
+</div>
+<div style="padding: 6px">
+    <p>This example use media queries to re-arrange the images on different screen sizes: for screens larger than 700px wide, it will show four images side by side, for screens smaller than 700px, it will show two images side by side. For screens smaller than 500px, the images will stack vertically (100%).</p>
+</div>
+</body>
+</html>
