@@ -31,11 +31,11 @@ span {padding: 15px 15px 15px 15px; color: #fbf2ff}
 
 #body_right {text-align: center; background-color: gray;}
 
-#left {background-color: gray}
 
-#right {float: right; background-color: gray}
 
-#left, #mid, #right {height: 500px}
+#right {float: right}
+
+#mid {background-color: white}
 
 #ads1, #ads2 {font-size: 20px; width: 100px; height: 50px; margin-top: 20px}
 
