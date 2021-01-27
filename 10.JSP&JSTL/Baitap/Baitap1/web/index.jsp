@@ -17,42 +17,15 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>
-    </tbody>
-  </table>
-
-  <table>
-    <tr>
-      <td><h3>Name</h3></td>
-      <td><h3>Date of birth</h3></td>
-      <td><h3>Address</h3></td>
-      <td><h3>Image</h3></td>
-    </tr>
     <c:forEach var="customer" items="${customerListFromServlet}">
-      <tr>
-        <td><c:out value="${customer.name}"/></td>
-        <td><c:out value="${customer.dateOfBirth}"/></td>
-        <td><c:out value="${customer.address}"/></td>
-        <td><img src="${customer.img}"></td>
-      </tr>
+    <tr>
+      <td><c:out value="${customer.name}"/></td>
+      <td><c:out value="${customer.dateOfBirth}"/></td>
+      <td><c:out value="${customer.address}"/></td>
+      <td><img src="${customer.img}" style="width: 100px; height: 100px"></td>
+    </tr>
     </c:forEach>
   </table>
+
   </body>
 </html>

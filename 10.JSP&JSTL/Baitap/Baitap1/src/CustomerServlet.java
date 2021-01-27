@@ -23,9 +23,9 @@ public class CustomerServlet extends HttpServlet {
         customerList.add(new Customer("Tom Holland" , "01/06/1996" , "Kingston upon Thames",
                 "/Holland.jpg"));
         customerList.add(new Customer("Benedict Cumberbatch" , "01/07/1991" , "London",
-                "src/Benedict.jfif"));
+                "/Benedict.jfif"));
         customerList.add(new Customer("Tom Hiddleston" , "09/02/1981" , "London" ,
-                "src/Tom.jpg"));
+                "/Tom.jpg"));
 
         request.setAttribute("customerListFromServlet" , customerList);
         request.getRequestDispatcher("index.jsp").forward(request , response);
